@@ -2,6 +2,7 @@
 version: "3"
 services:
   laravel.test:
+    container_name: mystocks_app
     build:
       context: ./vendor/laravel/sail/runtimes/8.0
       dockerfile: Dockerfile
@@ -9,12 +10,30 @@ services:
         WWWGROUP: "${WWWGROUP}"
     image: sail-8.0/app
     ports:
-      - "${APP_PORT:-80}:80"
+      - "4001:80"
     environment:
       WWWUSER: "${WWWUSER}"
       LARAVEL_SAIL: 1
+    depends_on:
+      - db
     volumes:
       - ".:/var/www/html"
+    networks:
+      - sail
+  db:
+    image: postgres:13.3-alpine
+    container_name: mystocks_db
+    environment:
+      - PGDATA=/var/lib/postgresql/data/
+      - POSTGRES_DB=mystocks_dev_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    mem_limit: "2048m"
+    restart: unless-stopped
+    ports:
+      - "4004:5432"
+    volumes:
+      - ./docker/data/db:/var/lib/postgresql/data
     networks:
       - sail
 networks:
