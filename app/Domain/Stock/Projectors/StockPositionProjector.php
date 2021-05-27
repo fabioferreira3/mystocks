@@ -18,16 +18,15 @@ class StockPositionProjector extends Projector {
 
     public function onStockPositionAdded(StockPositionAdded $event)
     {
-        $stockPosition = StockPosition::id($event->stockPositionId);
-
+        $stockPosition = StockPosition::byId($event->stockPositionId);
         $stockPosition->position += $event->amount;
-
+        $stockPosition->current_invested_value += ($event->amount * $event->unitPrice) + $event->taxes;
         $stockPosition->save();
     }
 
     public function onStockPositionSubtracted(StockPositionSubtracted $event)
     {
-        $stockPosition = StockPosition::id($event->stockPositionId);
+        $stockPosition = StockPosition::byId($event->stockPositionId);
 
         if($event->amount > $stockPosition->position) {
             $stockPosition->position = 0;
@@ -35,11 +34,12 @@ class StockPositionProjector extends Projector {
             $stockPosition->position -= $event->amount;
         }
 
+        $stockPosition->current_invested_value -= $event->amount * $event->unitPrice + $event->taxes;
         $stockPosition->save();
     }
 
     public function onStockPositionDeleted(StockPositionDeleted $event)
     {
-        StockPosition::id($event->stockPositionId)->delete();
+        StockPosition::byId($event->stockPositionId)->delete();
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWalletSharesTable extends Migration
+class CreateMonthlyResultsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,14 @@ class CreateWalletSharesTable extends Migration
      */
     public function up()
     {
-        Schema::create('wallet_shares', function (Blueprint $table) {
+        Schema::create('monthly_results', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('wallet_id');
-            $table->uuid('stock_id');
+            $table->decimal('total_value', 10, 2);
+            $table->decimal('taxes', 10, 2);
+            $table->boolean('hoof_gain')->default(false);
+            $table->decimal('previous_result', 10, 2)->nullable();
+            $table->date('at_date');
             $table->timestamps();
-
-            $table->foreign('wallet_id')->references('id')->on('wallets');
-            $table->foreign('stock_id')->references('id')->on('stocks');
         });
     }
 
@@ -31,6 +31,6 @@ class CreateWalletSharesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('wallet_shares');
+        Schema::dropIfExists('monthly_results');
     }
 }

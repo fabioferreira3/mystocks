@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Domain\Stock\Projectors\MonthlyResultsProjector;
 use Domain\Stock\Projectors\StockPositionProjector;
+use Domain\Stock\Projectors\StockTransactionProjector;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -29,6 +31,10 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Projectionist::addProjector(StockPositionProjector::class);
+        Projectionist::addProjectors([
+            StockPositionProjector::class,
+            StockTransactionProjector::class,
+            MonthlyResultsProjector::class
+        ]);
     }
 }

@@ -7,7 +7,6 @@ use Domain\Stock\Events\StockPositionCreated;
 use Domain\Stock\Events\StockPositionDeleted;
 use Domain\Stock\Events\StockPositionSubtracted;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-//use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 
@@ -24,7 +23,6 @@ class StockPosition extends Model
 
     public static function createWithAttributes(array $attributes): StockPosition
     {
-        // \Domain\Stock\StockPosition::createWithAttributes(['stock_id' => 'f9f6bf07-bccd-462f-b15d-10e0752d8aee', 'position' => 1, 'total_value' => 50.00])
         /*
          * Let's generate a uuid.
          */
@@ -37,25 +35,33 @@ class StockPosition extends Model
         /*
          * The uuid will be used the retrieve the created account.
          */
-        return static::id($attributes['id']);
+        return static::byId($attributes['id']);
     }
 
-    public function add(int $amount)
+    public function add(array $transactionData)
     {
-        event(new StockPositionAdded($this->id, $amount));
+        event(new StockPositionAdded($this->id, $transactionData['added'], $transactionData['unit_price'], $transactionData['taxes']));
     }
 
-    public function subtract(int $amount)
+    public function subtract(array $transactionData)
     {
-        event(new StockPositionSubtracted($this->id, $amount));
+        event(new StockPositionSubtracted($this->id, $transactionData['subtracted'], $transactionData['unit_price'], $transactionData['taxes']));
     }
 
     /*
-     * A helper method to quickly retrieve an account by uuid.
+     * A helper method to quickly retrieve an account by id.
      */
-    public static function id(string $id): ?StockPosition
+    public static function byId(string $id): ?StockPosition
     {
         return static::where('id', $id)->first();
+    }
+
+    /*
+     * A helper method to quickly retrieve an account by id.
+     */
+    public static function byStockId(string $stockId): ?StockPosition
+    {
+        return static::where('stock_id', $stockId)->first();
     }
 
     public function remove()

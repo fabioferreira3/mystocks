@@ -15,14 +15,17 @@ class CreateStockTransactionsTable extends Migration
     {
         Schema::create('stock_transactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('stock_position_id');
+            $table->uuid('stock_id');
+            $table->uuid('wallet_id');
             $table->tinyInteger('added')->nullable();
             $table->tinyInteger('subtracted')->nullable();
             $table->decimal('unit_price', 10, 2);
             $table->decimal('taxes', 10, 2)->default(0);
+            $table->date('date');
             $table->timestamps();
 
-            $table->foreign('stock_position_id')->references('id')->on('stock_positions');
+            $table->foreign('stock_id')->references('id')->on('stocks');
+            $table->foreign('wallet_id')->references('id')->on('wallets');
         });
     }
 
