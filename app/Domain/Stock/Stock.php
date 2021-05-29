@@ -20,4 +20,9 @@ class Stock extends Model
         'company',
         'sector'
     ];
+
+    public function position()
+    {
+        return $this->hasOne(StockPosition::class);
+    }
 }

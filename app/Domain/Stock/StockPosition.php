@@ -9,6 +9,7 @@ use Domain\Stock\Events\StockPositionSubtracted;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StockPosition extends Model
 {
@@ -40,12 +41,12 @@ class StockPosition extends Model
 
     public function add(array $transactionData)
     {
-        event(new StockPositionAdded($this->id, $transactionData['added'], $transactionData['unit_price'], $transactionData['taxes']));
+        event(new StockPositionAdded($this->id, $transactionData['amount'], $transactionData['unit_price'], $transactionData['taxes']));
     }
 
     public function subtract(array $transactionData)
     {
-        event(new StockPositionSubtracted($this->id, $transactionData['subtracted'], $transactionData['unit_price'], $transactionData['taxes']));
+        event(new StockPositionSubtracted($this->id, $transactionData['amount'], $transactionData['unit_price'], $transactionData['taxes']));
     }
 
     /*
@@ -67,5 +68,10 @@ class StockPosition extends Model
     public function remove()
     {
         event(new StockPositionDeleted($this->id));
+    }
+
+    public function stock(): BelongsTo
+    {
+        return $this->belongsTo(Stock::class);
     }
 }

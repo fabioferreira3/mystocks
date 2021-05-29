@@ -1,8 +1,7 @@
 <?php
 
-use App\Http\Controllers\StockTransactionController;
-use App\Http\Controllers\StockTransactionStoreController;
-use Illuminate\Http\Request;
+use Domain\Stock\Controllers\StockPositionController;
+use Domain\Stock\Controllers\StockTransactionStoreController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,3 +16,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('api')->post('/transaction', StockTransactionStoreController::class);
+Route::middleware('api')->get('/positions', [StockPositionController::class, 'index']);
