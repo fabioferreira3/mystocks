@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Domain\Stock\Controllers;
 
+use App\Http\Controllers\Controller;
 use Domain\Stock\StockTransaction;
 use Illuminate\Http\Request;
 
