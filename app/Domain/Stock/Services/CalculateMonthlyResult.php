@@ -17,16 +17,17 @@ class CalculateMonthlyResult {
         $monthResult = MonthlyResult::byDate($endOfMonthDate);
         $stockTotalValue = StockHelper::calculateStockValue($transactionData['amount'], $transactionData['unit_price'], $transactionData['taxes']);
 
+        $lastMonthResult = MonthlyResult::byDate(StockHelper::lastMonth($endOfMonthDate));
+        $previousResult = $lastMonthResult ? $lastMonthResult->total_value : 0;
+
         if($transactionData['type'] == 'buy') {
             $stockTotalValue = $stockTotalValue * -1;
         }
 
         if (!$monthResult) {
-
-            $lastMonthResult = MonthlyResult::byDate(StockHelper::lastMonth($endOfMonthDate));
-            $previousResult = $lastMonthResult ? $lastMonthResult->total_value : 0;
             return MonthlyResult::create([
                 'total_value' => $stockTotalValue + $previousResult,
+                'month_result' => $stockTotalValue,
                 'taxes' => $transactionData['taxes'],
                 'hoof_gain' => (bool) $stockTotalValue > 20000,
                 'previous_result' => $previousResult,
@@ -40,6 +41,8 @@ class CalculateMonthlyResult {
             $monthResult->total_value -= $stockTotalValue;
         }
 
+        $monthResult->previous_result = $previousResult;
+        $monthResult->month_result += $stockTotalValue;
         $monthResult->taxes += $transactionData['taxes'];
         $monthResult->hoof_gain = (bool) $monthResult->total_value > 20000;
         $monthResult->save();
