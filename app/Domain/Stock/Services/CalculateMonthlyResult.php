@@ -15,22 +15,20 @@ class CalculateMonthlyResult {
         $parsedDate = Carbon::parse($transactionData['date']);
         $endOfMonthDate = $parsedDate->endOfMonth()->format('Y-m-d');
         $monthResult = MonthlyResult::byDate($endOfMonthDate);
-        $stockTotalValue = StockHelper::calculateStockValue($transactionData['amount'], $transactionData['unit_price'], $transactionData['taxes']);
-
-        $lastMonthResult = MonthlyResult::byDate(StockHelper::lastMonth($endOfMonthDate));
-        $previousResult = $lastMonthResult ? $lastMonthResult->total_value : 0;
+        $stockValue = StockHelper::calculateStockValue($transactionData['amount'], $transactionData['unit_price']);
+        $stockTotalValue = $stockValue + $transactionData['taxes'];
 
         if($transactionData['type'] == 'buy') {
+            $stockValue = $stockValue * -1;
             $stockTotalValue = $stockTotalValue * -1;
         }
 
         if (!$monthResult) {
             return MonthlyResult::create([
-                'total_value' => $stockTotalValue + $previousResult,
+                'total_value' => $stockValue,
                 'month_result' => $stockTotalValue,
                 'taxes' => $transactionData['taxes'],
                 'hoof_gain' => (bool) $stockTotalValue > 20000,
-                'previous_result' => $previousResult,
                 'at_date' => $endOfMonthDate,
             ]);
         }
@@ -41,7 +39,6 @@ class CalculateMonthlyResult {
             $monthResult->total_value -= $stockTotalValue;
         }
 
-        $monthResult->previous_result = $previousResult;
         $monthResult->month_result += $stockTotalValue;
         $monthResult->taxes += $transactionData['taxes'];
         $monthResult->hoof_gain = (bool) $monthResult->total_value > 20000;
