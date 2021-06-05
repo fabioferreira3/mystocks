@@ -14,7 +14,7 @@ class AddMonthResultColumnToMonthlyResultsTable extends Migration
     public function up()
     {
         Schema::table('monthly_results', function (Blueprint $table) {
-            $table->decimal('month_result', 10, 2)->nullable();
+            $table->decimal('month_result', 10, 2);
         });
     }
 

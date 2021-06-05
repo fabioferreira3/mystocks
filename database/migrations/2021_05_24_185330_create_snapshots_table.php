@@ -19,4 +19,8 @@ class CreateSnapshotsTable extends Migration
             $table->index('aggregate_uuid');
         });
     }
+
+    public function down() {
+        Schema::dropIfExists('snapshots');
+    }
 }
