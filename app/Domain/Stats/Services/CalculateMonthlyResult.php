@@ -1,12 +1,11 @@
 <?php
 
-namespace Domain\Stock\Services;
+namespace Domain\Stats\Services;
 
 use Carbon\Carbon;
 use Domain\Stock\Events\StockTransactionCreated;
 use Domain\Stock\Helpers\StockHelper;
-use Domain\Stock\MonthlyResult;
-use Illuminate\Support\Facades\Log;
+use Domain\Stats\MonthlyResult;
 
 class CalculateMonthlyResult {
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace Domain\Stock\Projectors;
+namespace Domain\Stats\Projectors;
 
 use Domain\Stock\Events\StockTransactionCreated;
-use Domain\Stock\Services\CalculateMonthlyResult;
+use Domain\Stats\Services\CalculateMonthlyResult;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class MonthlyResultsProjector extends Projector {
