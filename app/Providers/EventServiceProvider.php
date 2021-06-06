@@ -2,13 +2,12 @@
 
 namespace App\Providers;
 
-use Domain\Stock\Projectors\MonthlyResultsProjector;
+use Domain\Stats\Projectors\MonthlyResultsProjector;
 use Domain\Stock\Projectors\StockPositionProjector;
 use Domain\Stock\Projectors\StockTransactionProjector;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 use Spatie\EventSourcing\Facades\Projectionist;
 
 class EventServiceProvider extends ServiceProvider

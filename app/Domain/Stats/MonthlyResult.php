@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Stock;
+namespace Domain\Stats;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
