@@ -41,7 +41,7 @@ class AddStock extends Command
         $stockCode = $this->ask('Type in the Stock code');
         $stockType = $this->choice(
             'Choose the Stock type',
-            ['PN', 'ON', 'ETF', 'FII', 'BDR'],
+            ['PN', 'ON', 'ETF', 'FII', 'BDR', 'UNT'],
             0
         );
         $stockCompany = $this->ask('Type in the Stock company');

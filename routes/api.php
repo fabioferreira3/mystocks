@@ -2,6 +2,7 @@
 
 use Domain\Stock\Controllers\StockController;
 use Domain\Stock\Controllers\StockPositionController;
+use Domain\Stock\Controllers\StockTransactionReadController;
 use Domain\Stock\Controllers\StockTransactionStoreController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,5 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('api')->post('/transaction', StockTransactionStoreController::class);
+Route::middleware('api')->get('/transactions', StockTransactionReadController::class);
 Route::middleware('api')->get('/positions', [StockPositionController::class, 'index']);
 Route::middleware('api')->get('/stocks', [StockController::class, 'index']);
+
