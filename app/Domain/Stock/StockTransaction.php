@@ -2,6 +2,7 @@
 
 namespace Domain\Stock;
 
+use Carbon\Carbon;
 use Domain\Stock\Events\StockTransactionCreated;
 use Domain\Wallet\Wallet;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
