@@ -28,7 +28,6 @@ class CalculateMonthlyResult {
                 'total_value' => $stockValue,
                 'month_result' => $stockTotalValue,
                 'taxes' => $transactionData['taxes'],
-                'hoof_gain' => $stockTotalValue > 20000,
                 'at_date' => $endOfMonthDate,
             ]);
         }
@@ -36,7 +35,6 @@ class CalculateMonthlyResult {
         $monthResult->total_value += $stockValue;
         $monthResult->month_result += $stockTotalValue;
         $monthResult->taxes += $transactionData['taxes'];
-        $monthResult->hoof_gain = $monthResult->total_value > 20000;
         $monthResult->save();
     }
 }

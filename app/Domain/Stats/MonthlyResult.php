@@ -17,7 +17,6 @@ class MonthlyResult extends Model
     protected $fillable = [
         'total_value',
         'taxes',
-        'hoof_gain',
         'month_result',
         'previous_result',
         'at_date'
