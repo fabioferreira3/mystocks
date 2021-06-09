@@ -15,7 +15,7 @@ class StockPositionController extends Controller
      */
     public function index(Request $request)
     {
-        $positions = StockPosition::all();
+        $positions = StockPosition::where('position', '>', 0)->get();
         $response = [
             'positions' => $positions->map(function($position) {
                 return [

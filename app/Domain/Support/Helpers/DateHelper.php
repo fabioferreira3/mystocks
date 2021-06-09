@@ -4,7 +4,7 @@ namespace Domain\Support\Helpers;
 
 use Carbon\Carbon;
 
-class DateHelpers {
+class DateHelper {
 
     public static function lastMonth(string $date = null) {
         $parsedDate = $date ? Carbon::parse($date) : Carbon::now();

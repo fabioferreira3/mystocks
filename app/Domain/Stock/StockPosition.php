@@ -49,17 +49,11 @@ class StockPosition extends Model
         event(new StockPositionSubtracted($this->id, $transactionData['amount'], $transactionData['unit_price'], $transactionData['taxes']));
     }
 
-    /*
-     * A helper method to quickly retrieve an account by id.
-     */
     public static function byId(string $id): ?StockPosition
     {
         return static::where('id', $id)->first();
     }
 
-    /*
-     * A helper method to quickly retrieve an account by id.
-     */
     public static function byStockId(string $stockId): ?StockPosition
     {
         return static::where('stock_id', $stockId)->first();

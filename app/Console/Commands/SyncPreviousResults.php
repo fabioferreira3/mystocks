@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Domain\Stats\Jobs\SyncMonthlyPreviousResults;
-use Domain\Stock\Stock;
 use Illuminate\Console\Command;
 
 class SyncPreviousResults extends Command
