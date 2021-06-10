@@ -10,7 +10,7 @@ class StockSplit extends ShouldBeStored
     /** @var string */
     public $stockId;
 
-    /** @var int */
+    /** @var string */
     public $targetProportion;
 
     /** @var string */

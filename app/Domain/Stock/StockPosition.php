@@ -2,10 +2,7 @@
 
 namespace Domain\Stock;
 
-use Domain\Stock\Events\StockPositionAdded;
-use Domain\Stock\Events\StockPositionCreated;
 use Domain\Stock\Events\StockPositionDeleted;
-use Domain\Stock\Events\StockPositionSubtracted;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
@@ -31,7 +28,8 @@ class StockPosition extends Model
         /*
          * The account will be created inside this event using the generated uuid.
          */
-        event(new StockPositionCreated($attributes));
+     //   event(new StockPositionCreated($attributes));
+        self::create($attributes);
 
         /*
          * The uuid will be used the retrieve the created account.
@@ -41,12 +39,21 @@ class StockPosition extends Model
 
     public function add(array $transactionData)
     {
-        event(new StockPositionAdded($this->id, $transactionData['amount'], $transactionData['unit_price'], $transactionData['taxes']));
+        $this->position += $transactionData['amount'];
+        $this->current_invested_value += ($transactionData['amount'] * $transactionData['unit_price']) + $transactionData['taxes'];
+        $this->save();
     }
 
     public function subtract(array $transactionData)
     {
-        event(new StockPositionSubtracted($this->id, $transactionData['amount'], $transactionData['unit_price'], $transactionData['taxes']));
+        if($transactionData['amount'] > $this->position) {
+            $this->position = 0;
+        } else {
+            $this->position -= $transactionData['amount'];
+        }
+
+        $this->current_invested_value -= $transactionData['amount'] * $transactionData['unit_price'] + $transactionData['taxes'];
+        $this->save();
     }
 
     public static function byId(string $id): ?StockPosition

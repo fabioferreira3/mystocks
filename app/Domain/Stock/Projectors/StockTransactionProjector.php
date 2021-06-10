@@ -2,6 +2,7 @@
 
 namespace Domain\Stock\Projectors;
 
+use Domain\Stock\Events\StockSplit;
 use Domain\Stock\Events\StockTransactionCreated;
 use Domain\Stock\StockPosition;
 use Domain\Stock\StockTransaction;
@@ -31,5 +32,4 @@ class StockTransactionProjector extends Projector {
         return $stockPosition->subtract($transactionData);
 
     }
-
 }
