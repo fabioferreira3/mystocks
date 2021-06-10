@@ -13,6 +13,7 @@
         "fruitcake/laravel-cors": "^2.0",
         "goldspecdigital/laravel-eloquent-uuid": "^8.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "kokspflanze/alpha-vantage-api": "^0.10.0",
         "laravel/framework": "^8.40",
         "laravel/tinker": "^2.5",
         "spatie/laravel-event-sourcing": "^4.10"
