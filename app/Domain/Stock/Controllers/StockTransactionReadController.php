@@ -18,7 +18,7 @@ class StockTransactionReadController extends Controller
     {
         $year = $request->input('year');
         $month = $request->input('month');
-        $transactions = StockTransaction::getByDate($year,$month);
+        $transactions = StockTransaction::byDate($year,$month)->get();
 
         return collect(TransactionResource::collection($transactions))->groupBy('date');
     }

@@ -2,6 +2,7 @@
 
 namespace Domain\Stock\Resources;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TransactionResource extends JsonResource
@@ -20,7 +21,8 @@ class TransactionResource extends JsonResource
             'type' => $this->type,
             'amount' => $this->amount,
             'unit_price' => $this->unit_price,
-            'total_price' => (float) number_format($this->unit_price * $this->amount, 2),
+            'taxes' => $this->taxes,
+            'total_price' => Str::replace(',', '',  number_format($this->unit_price * $this->amount, 2)),
             'date' => $this->date->format('Y-m-d')
         ];
     }

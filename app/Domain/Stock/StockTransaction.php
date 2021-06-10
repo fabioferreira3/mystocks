@@ -2,7 +2,6 @@
 
 namespace Domain\Stock;
 
-use Carbon\Carbon;
 use Domain\Stock\Events\StockTransactionCreated;
 use Domain\Wallet\Wallet;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,7 +18,7 @@ class StockTransaction extends Model
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $guarded = ['id'];
     protected $casts = ['date' => 'date', 'unit_price' => 'float'];
 
     public function stock(): BelongsTo
@@ -57,12 +56,12 @@ class StockTransaction extends Model
         return static::where('id', $id)->first();
     }
 
-    public static function getByDate($year, $month = null) {
+    public static function byDate($year, $month = null) {
         $query = static::whereYear('date', $year);
         if ($month) {
             $query->whereMonth('date', $month);
         }
 
-        return $query->orderBy('date', 'DESC')->get();
+        return $query->orderBy('date', 'DESC');
     }
 }

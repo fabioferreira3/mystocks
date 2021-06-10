@@ -5,6 +5,9 @@
         },
         {
             "path": "../mystocks-react"
+        },
+        {
+            "path": "../mystocks-sync"
         }
     ]
 }
