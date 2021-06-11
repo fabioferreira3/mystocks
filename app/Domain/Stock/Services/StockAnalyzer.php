@@ -17,7 +17,7 @@ class StockAnalyzer {
 
     public function symbolSearch(string $symbol) {
         $data = $this->client->timeSeries()->symbolSearch($symbol);
-        if (isset($data['bestMatches']) && $data['bestMatches'] > 0) {
+        if (isset($data['bestMatches']) && count($data['bestMatches']) > 0) {
             $results = $data['bestMatches'][0];
             return [
                 'symbol' => $symbol,

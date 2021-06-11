@@ -31,7 +31,7 @@ class StockTransaction extends Model
         return $this->belongsTo(Wallet::class);
     }
 
-    public static function createWithAttributes(array $attributes): StockTransaction
+    public static function createWithAttributes(array $attributes): ?StockTransaction
     {
         /*
          * Let's generate a uuid.

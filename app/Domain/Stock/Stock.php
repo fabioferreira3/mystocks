@@ -18,7 +18,8 @@ class Stock extends Model
         'name',
         'type',
         'company',
-        'sector'
+        'sector',
+        'symbol'
     ];
 
     public function position()
@@ -29,5 +30,9 @@ class Stock extends Model
     public static function byId(string $id): ?Stock
     {
         return static::where('id', $id)->first();
+    }
+
+    public static function byCode(string $code): ?Stock{
+        return static::where('name', $code)->first();
     }
 }
