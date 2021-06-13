@@ -28,7 +28,6 @@ class StockPosition extends Model
         /*
          * The account will be created inside this event using the generated uuid.
          */
-     //   event(new StockPositionCreated($attributes));
         self::create($attributes);
 
         /*

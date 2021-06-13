@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBrokerageNotesTable extends Migration
+class CreateBrokerageNoteItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,18 @@ class CreateBrokerageNotesTable extends Migration
      */
     public function up()
     {
-        Schema::create('brokerage_notes', function (Blueprint $table) {
+        Schema::create('brokerage_note_items', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('broker_id')->nullable();
-            $table->date('date');
+            $table->uuid('stock_id')->nullable();
+            $table->uuid('brokerage_note_id');
+            $table->string('type');
             $table->decimal('taxes', 10, 2);
             $table->decimal('net_value', 10, 2);
             $table->decimal('total_value', 10, 2);
-            $table->integer('sells')->default(0);
-            $table->integer('purchases')->default(0);
             $table->timestamps();
 
-            $table->foreign('broker_id')->references('id')->on('brokers');
+            $table->foreign('stock_id')->references('id')->on('stocks');
+            $table->foreign('brokerage_note_id')->references('id')->on('brokerage_notes');
         });
     }
 
@@ -35,6 +35,6 @@ class CreateBrokerageNotesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('brokerage_notes');
+        Schema::dropIfExists('brokerage_note_items');
     }
 }
