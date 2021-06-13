@@ -3,6 +3,7 @@
 namespace Domain\Stock;
 
 use Domain\Stock\Events\StockPositionDeleted;
+use Domain\Stock\Helpers\StockHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
@@ -39,7 +40,7 @@ class StockPosition extends Model
     public function add(array $transactionData)
     {
         $this->position += $transactionData['amount'];
-        $this->current_invested_value += ($transactionData['amount'] * $transactionData['unit_price']) + $transactionData['taxes'];
+        $this->current_invested_value += StockHelper::calculateTotalStockValue($transactionData['amount'], $transactionData['unit_price'], $transactionData['taxes']);
         $this->save();
     }
 
@@ -51,7 +52,7 @@ class StockPosition extends Model
             $this->position -= $transactionData['amount'];
         }
 
-        $this->current_invested_value -= $transactionData['amount'] * $transactionData['unit_price'] + $transactionData['taxes'];
+        $this->current_invested_value -= StockHelper::calculateTotalStockValue($transactionData['amount'], $transactionData['unit_price'], $transactionData['taxes']);
         $this->save();
     }
 
@@ -63,6 +64,35 @@ class StockPosition extends Model
     public static function byStockId(string $stockId): ?StockPosition
     {
         return static::where('stock_id', $stockId)->first();
+    }
+
+    public function apply(StockTransaction $stockTransaction)
+    {
+        $transactionData = [
+            'amount' => $stockTransaction->amount,
+            'unit_price' => $stockTransaction->unit_price,
+            'taxes' => $stockTransaction->taxes
+        ];
+
+        if ($stockTransaction->type == 'buy') {
+            $this->add($transactionData);
+        } else {
+            $this->subtract($transactionData);
+        }
+    }
+
+    public function rollback(StockTransaction $stockTransaction)
+    {
+        $transactionData = [
+            'amount' => $stockTransaction->amount,
+            'unit_price' => $stockTransaction->unit_price,
+            'taxes' => $stockTransaction->taxes
+        ];
+        if ($stockTransaction->type == 'buy') {
+            $this->subtract($transactionData);
+        } else {
+            $this->add($transactionData);
+        }
     }
 
     public function remove()

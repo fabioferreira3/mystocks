@@ -2,10 +2,11 @@
 
 namespace Domain\Stock\Projectors;
 
-use Domain\Stock\Events\StockSplit;
 use Domain\Stock\Events\StockTransactionCreated;
+use Domain\Stock\Events\StockTransactionUpdated;
 use Domain\Stock\StockPosition;
 use Domain\Stock\StockTransaction;
+use Illuminate\Support\Facades\Log;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class StockTransactionProjector extends Projector {
@@ -13,8 +14,9 @@ class StockTransactionProjector extends Projector {
     public function onStockTransactionCreated(StockTransactionCreated $event)
     {
         $transactionData = $event->stockTransactionAttributes;
-        StockTransaction::create($transactionData);
-        if (!StockPosition::byStockId($transactionData['stock_id']) && $transactionData['type'] == 'buy') {
+        $stockTransaction = StockTransaction::create($transactionData);
+        $stockPosition = StockPosition::byStockId($transactionData['stock_id']);
+        if (!$stockPosition && $transactionData['type'] == 'buy') {
             return StockPosition::createWithAttributes([
                 'stock_id' => $transactionData['stock_id'],
                 'position' => $transactionData['amount'],
@@ -23,13 +25,21 @@ class StockTransactionProjector extends Projector {
             ]);
         }
 
-        $stockPosition = StockPosition::byStockId($transactionData['stock_id']);
-
-        if ($transactionData['type'] == 'buy') {
-            return $stockPosition->add($transactionData);
+        if ($stockPosition) {
+            $stockPosition->apply($stockTransaction);
         }
+    }
 
-        return $stockPosition->subtract($transactionData);
+    public function onStockTransactionUpdated(StockTransactionUpdated $event)
+    {
+        $transactionData = $event->stockTransactionAttributes;
+        $stockTransaction = StockTransaction::byId($transactionData['id']);
 
+        $stockPosition = StockPosition::byStockId($transactionData['stock_id']);
+        $stockPosition->rollback($stockTransaction);
+
+        $stockTransaction->update($transactionData);
+
+        $stockPosition->apply($stockTransaction->refresh());
     }
 }
