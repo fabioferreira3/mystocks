@@ -48,7 +48,6 @@ class ProcessStockTransactions extends Command
             BrokerageNote::truncate();
             $this->call('event-sourcing:replay', ['projector' => ['Domain\\Stock\\Projectors\\StockTransactionProjector']]);
             $this->call('event-sourcing:replay', ['projector' => ['Domain\\Stock\\Projectors\\StockPositionProjector']]);
-            $this->call('event-sourcing:replay', ['projector' => ['Domain\\Broker\\Projectors\\BrokerageNoteProjector']]);
             $this->info('Stock transactions re-processed successfully!');
         };
 

@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use Domain\Broker\Projectors\BrokerageNoteProjector;
 use Domain\Stats\Projectors\MonthlyResultsProjector;
 use Domain\Stock\Projectors\StockPositionProjector;
 use Domain\Stock\Projectors\StockTransactionProjector;
@@ -32,7 +31,6 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         Projectionist::addProjectors([
-            BrokerageNoteProjector::class,
             StockPositionProjector::class,
             StockTransactionProjector::class,
             MonthlyResultsProjector::class

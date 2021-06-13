@@ -17,7 +17,9 @@ class CreateBrokerageNoteItemsTable extends Migration
             $table->uuid('id')->primary();
             $table->uuid('stock_id')->nullable();
             $table->uuid('brokerage_note_id');
+            $table->uuid('stock_transaction_id')->nullable();
             $table->string('type');
+            $table->integer('amount');
             $table->decimal('taxes', 10, 2);
             $table->decimal('net_value', 10, 2);
             $table->decimal('total_value', 10, 2);
@@ -25,6 +27,7 @@ class CreateBrokerageNoteItemsTable extends Migration
 
             $table->foreign('stock_id')->references('id')->on('stocks');
             $table->foreign('brokerage_note_id')->references('id')->on('brokerage_notes');
+            $table->foreign('stock_transaction_id')->references('id')->on('stock_transactions');
         });
     }
 

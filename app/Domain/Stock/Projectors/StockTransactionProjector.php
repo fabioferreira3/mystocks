@@ -14,7 +14,17 @@ class StockTransactionProjector extends Projector {
     public function onStockTransactionCreated(StockTransactionCreated $event)
     {
         $transactionData = $event->stockTransactionAttributes;
-        $stockTransaction = StockTransaction::create($transactionData);
+        $stockTransaction = StockTransaction::create([
+            'id' => $transactionData['id'],
+            'stock_id' => $transactionData['stock_id'],
+            'wallet_id' => $transactionData['wallet_id'],
+            'taxes' => $transactionData['taxes'],
+            'unit_price' => $transactionData['unit_price'],
+            'amount' => $transactionData['amount'],
+            'type' => $transactionData['type'],
+            'date' => $transactionData['date'],
+        ]);
+
         $stockPosition = StockPosition::byStockId($transactionData['stock_id']);
         if (!$stockPosition && $transactionData['type'] == 'buy') {
             return StockPosition::createWithAttributes([

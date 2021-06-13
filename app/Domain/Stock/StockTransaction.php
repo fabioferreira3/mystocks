@@ -7,8 +7,8 @@ use Domain\Stock\Events\StockTransactionUpdated;
 use Domain\Wallet\Wallet;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
-use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 
 class StockTransaction extends Model
 {
@@ -19,7 +19,16 @@ class StockTransaction extends Model
      *
      * @var array
      */
-    protected $guarded = ['id'];
+   protected $fillable = [
+       'id',
+       'date',
+       'unit_price',
+       'taxes',
+       'stock_id',
+       'wallet_id',
+       'amount',
+       'type'
+    ];
     protected $casts = ['date' => 'date', 'unit_price' => 'float'];
 
     public function stock(): BelongsTo

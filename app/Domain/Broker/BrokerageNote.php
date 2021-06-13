@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class BrokerageNote extends Model
@@ -66,5 +67,27 @@ class BrokerageNote extends Model
     public function brokerageNoteItems(): HasMany
     {
         return $this->hasMany(BrokerageNoteItem::class);
+    }
+
+    public function reprocess()
+    {
+        $brokerageNoteUpdates = [
+            'total_taxes' => 0,
+            'net_value' => 0,
+            'total_value' => 0,
+            'sells' => 0,
+            'purchases' => 0
+        ];
+        if ($this->brokerageNoteItems()->count()) {
+            Log::debug('nao');
+            $this->brokerageNoteItems()->each(function($brokerageNoteItem) use ($brokerageNoteUpdates) {
+                $brokerageNoteUpdates['taxes'] += $brokerageNoteItem->taxes;
+                $brokerageNoteUpdates['net_value'] += $brokerageNoteItem->net_value;
+                $brokerageNoteUpdates['total_value'] += $brokerageNoteItem->total_value;
+                $brokerageNoteUpdates['sells'] += $brokerageNoteItem->type == 'sell' ? 1 : 0;
+                $brokerageNoteUpdates['purchases'] += $brokerageNoteItem->type == 'buy' ? 1 : 0;
+            });
+        }
+        $this->update($brokerageNoteUpdates);
     }
 }

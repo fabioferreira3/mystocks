@@ -3,10 +3,11 @@
 namespace Domain\Broker;
 
 use Domain\Stock\Stock;
+use Domain\Stock\StockTransaction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
+use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 
 class BrokerageNoteItem extends Model
 {
@@ -20,7 +21,9 @@ class BrokerageNoteItem extends Model
     protected $fillable = [
         'stock_id',
         'brokerage_note_id',
+        'stock_transaction_id',
         'type',
+        'amount',
         'taxes',
         'net_value',
         'total_value'
@@ -37,9 +40,24 @@ class BrokerageNoteItem extends Model
         return static::where('id', $id)->first();
     }
 
+    public static function byStockId(string $stockId): ?BrokerageNoteItem
+    {
+        return static::where('stock_id', $stockId)->first();
+    }
+
+    public static function byStockTransactionId(string $stockTransactionId): ?BrokerageNoteItem
+    {
+        return static::where('stock_transaction_id', $stockTransactionId)->first();
+    }
+
     public function stock(): BelongsTo
     {
         return $this->belongsTo(Stock::class);
+    }
+
+    public function stockTransaction(): BelongsTo
+    {
+        return $this->belongsTo(StockTransaction::class);
     }
 
     public function brokerageNote(): BelongsTo
