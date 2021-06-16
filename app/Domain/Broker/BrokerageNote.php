@@ -72,21 +72,20 @@ class BrokerageNote extends Model
     public function reprocess()
     {
         $brokerageNoteUpdates = [
-            'total_taxes' => 0,
+            'taxes' => 0,
             'net_value' => 0,
             'total_value' => 0,
             'sells' => 0,
             'purchases' => 0
         ];
         if ($this->brokerageNoteItems()->count()) {
-            Log::debug('nao');
-            $this->brokerageNoteItems()->each(function($brokerageNoteItem) use ($brokerageNoteUpdates) {
-                $brokerageNoteUpdates['taxes'] += $brokerageNoteItem->taxes;
-                $brokerageNoteUpdates['net_value'] += $brokerageNoteItem->net_value;
-                $brokerageNoteUpdates['total_value'] += $brokerageNoteItem->total_value;
-                $brokerageNoteUpdates['sells'] += $brokerageNoteItem->type == 'sell' ? 1 : 0;
-                $brokerageNoteUpdates['purchases'] += $brokerageNoteItem->type == 'buy' ? 1 : 0;
-            });
+            foreach ($this->brokerageNoteItems->toArray() as $item) {
+                $brokerageNoteUpdates['taxes'] += $item['taxes'];
+                $brokerageNoteUpdates['net_value'] += $item['amount'] * $item['net_value'];
+                $brokerageNoteUpdates['total_value'] += $item['total_value'];
+                $brokerageNoteUpdates['sells'] += $item['type'] == 'sell' ? 1 : 0;
+                $brokerageNoteUpdates['purchases'] += $item['type'] == 'buy' ? 1 : 0;
+            }
         }
         $this->update($brokerageNoteUpdates);
     }

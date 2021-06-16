@@ -2,7 +2,6 @@
 
 namespace Domain\Stock\Observers;
 
-use Domain\Broker\BrokerageNote;
 use Domain\Broker\BrokerageNoteItem;
 use Domain\Stock\Helpers\StockHelper;
 
@@ -14,7 +13,7 @@ class BrokerageNoteItemObserver
         $brokerageNoteItem->brokerageNote->purchases += $brokerageNoteItem->type == 'buy' ? 1 : 0;
         $brokerageNoteItem->brokerageNote->taxes += $brokerageNoteItem->taxes;
         $brokerageNoteItem->brokerageNote->net_value += StockHelper::calculateStockValue($brokerageNoteItem->amount, $brokerageNoteItem->net_value);
-        $brokerageNoteItem->brokerageNote->total_value += $brokerageNoteItem->totalValue;
+        $brokerageNoteItem->brokerageNote->total_value += $brokerageNoteItem->total_value;
         $brokerageNoteItem->brokerageNote->save();
     }
 

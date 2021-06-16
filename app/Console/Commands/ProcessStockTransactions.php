@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Domain\Broker\BrokerageNote;
 use Domain\Broker\BrokerageNoteItem;
+use Domain\Stats\MonthlyResult;
 use Domain\Stock\StockPosition;
 use Domain\Stock\StockTransaction;
 use Illuminate\Console\Command;
