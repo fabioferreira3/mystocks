@@ -3,6 +3,7 @@
 namespace Domain\Stock;
 
 use Domain\Stock\Events\StockTransactionCreated;
+use Domain\Stock\Events\StockTransactionDeleted;
 use Domain\Stock\Events\StockTransactionUpdated;
 use Domain\Wallet\Wallet;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -52,6 +53,11 @@ class StockTransaction extends Model
     {
         event(new StockTransactionUpdated($attributes));
         return static::byId($attributes['id']);
+    }
+
+    public static function deleteById($id)
+    {
+        event(new StockTransactionDeleted($id));
     }
 
     public static function byId(string $id): ?StockTransaction

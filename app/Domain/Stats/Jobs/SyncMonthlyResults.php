@@ -12,10 +12,10 @@ class SyncMonthlyResults {
 
     use Dispatchable, SerializesModels;
 
-    protected $monthlyResult;
+    protected $date;
 
-    public function __construct(MonthlyResult $monthlyResult) {
-        $this->monthlyResult = $monthlyResult;
+    public function __construct(string $date) {
+        $this->monthlyResult = MonthlyResult::byRelatedDate($date);
     }
 
     /**

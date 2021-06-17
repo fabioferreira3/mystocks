@@ -81,6 +81,21 @@ class StockPosition extends Model
         }
     }
 
+    public function misapply(StockTransaction $stockTransaction)
+    {
+        $transactionData = [
+            'amount' => $stockTransaction->amount,
+            'unit_price' => $stockTransaction->unit_price,
+            'taxes' => $stockTransaction->taxes
+        ];
+
+        if ($stockTransaction->type == 'buy') {
+            $this->subtract($transactionData);
+        } else {
+            $this->add($transactionData);
+        }
+    }
+
     public function rollback(StockTransaction $stockTransaction)
     {
         $transactionData = [

@@ -2,9 +2,12 @@
 
 namespace Domain\Stock\Projectors;
 
+use Domain\Broker\BrokerageNoteItem;
 use Domain\Broker\Jobs\CreateBrokerageNoteByStockTransaction;
 use Domain\Broker\Jobs\UpdateBrokerageNoteByStockTransaction;
+use Domain\Stats\Jobs\SyncMonthlyResults;
 use Domain\Stock\Events\StockTransactionCreated;
+use Domain\Stock\Events\StockTransactionDeleted;
 use Domain\Stock\Events\StockTransactionUpdated;
 use Domain\Stock\StockPosition;
 use Domain\Stock\StockTransaction;
@@ -57,5 +60,18 @@ class StockTransactionProjector extends Projector {
         $stockPosition->apply($stockTransaction);
 
         UpdateBrokerageNoteByStockTransaction::dispatchSync($stockTransaction);
+    }
+
+    public function onStockTransactionDeleted(StockTransactionDeleted $event)
+    {
+        $stockTransaction = StockTransaction::byId($event->id);
+        $transactionDate = $stockTransaction->date;
+        $stockPosition = StockPosition::byStockId($stockTransaction->stock_id);
+        $stockPosition->misapply($stockTransaction);
+        BrokerageNoteItem::byStockTransactionId($event->id)->delete();
+
+        $stockTransaction->delete();
+
+        SyncMonthlyResults::dispatchSync($transactionDate);
     }
 }

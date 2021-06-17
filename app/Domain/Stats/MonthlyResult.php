@@ -40,7 +40,7 @@ class MonthlyResult extends Model
     public static function byRelatedDate(string $date): ?MonthlyResult
     {
         $parsedDate = Carbon::parse($date)->endOfMonth()->format('Y-m-d');
-        return static::ByDate($parsedDate);
+        return static::byDate($parsedDate);
     }
 
     public function setPreviousResults()

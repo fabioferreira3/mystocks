@@ -21,4 +21,9 @@ class BrokerageNoteItemObserver
     {
         $brokerageNoteItem->brokerageNote->reprocess();
     }
+
+    public function deleted(BrokerageNoteItem $brokerageNoteItem)
+    {
+        $brokerageNoteItem->brokerageNote->reprocess();
+    }
 }
