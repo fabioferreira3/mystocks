@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class BrokerageNote extends Model
@@ -25,7 +24,7 @@ class BrokerageNote extends Model
         'net_value',
         'total_value',
         'sells',
-        'purchase'
+        'purchases'
     ];
 
     public static function createWithAttributes(array $attributes): BrokerageNote

@@ -2,11 +2,12 @@
 
 namespace Domain\Stock\Projectors;
 
+use Domain\Broker\Jobs\CreateBrokerageNoteByStockTransaction;
+use Domain\Broker\Jobs\UpdateBrokerageNoteByStockTransaction;
 use Domain\Stock\Events\StockTransactionCreated;
 use Domain\Stock\Events\StockTransactionUpdated;
 use Domain\Stock\StockPosition;
 use Domain\Stock\StockTransaction;
-use Illuminate\Support\Facades\Log;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class StockTransactionProjector extends Projector {
@@ -27,7 +28,7 @@ class StockTransactionProjector extends Projector {
 
         $stockPosition = StockPosition::byStockId($transactionData['stock_id']);
         if (!$stockPosition && $transactionData['type'] == 'buy') {
-            return StockPosition::createWithAttributes([
+            StockPosition::createWithAttributes([
                 'stock_id' => $transactionData['stock_id'],
                 'position' => $transactionData['amount'],
                 'current_invested_value' => $transactionData['amount'] * $transactionData['unit_price'] + $transactionData['taxes'],
@@ -38,6 +39,8 @@ class StockTransactionProjector extends Projector {
         if ($stockPosition) {
             $stockPosition->apply($stockTransaction);
         }
+
+        CreateBrokerageNoteByStockTransaction::dispatchSync($stockTransaction);
     }
 
     public function onStockTransactionUpdated(StockTransactionUpdated $event)
@@ -49,7 +52,10 @@ class StockTransactionProjector extends Projector {
         $stockPosition->rollback($stockTransaction);
 
         $stockTransaction->update($transactionData);
+        $stockTransaction = $stockTransaction->refresh();
 
-        $stockPosition->apply($stockTransaction->refresh());
+        $stockPosition->apply($stockTransaction);
+
+        UpdateBrokerageNoteByStockTransaction::dispatchSync($stockTransaction);
     }
 }
