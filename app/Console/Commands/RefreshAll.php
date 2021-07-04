@@ -2,24 +2,23 @@
 
 namespace App\Console\Commands;
 
-use Domain\Stats\MonthlyResult;
 use Illuminate\Console\Command;
 
-class CalcMonthlyResults extends Command
+class RefreshAll extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'stats:calc-monthly-results';
+    protected $signature = 'refresh';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Calcs monthly results';
+    protected $description = 'Re-processes all events';
 
     /**
      * Create a new command instance.
@@ -38,12 +37,12 @@ class CalcMonthlyResults extends Command
      */
     public function handle()
     {
-        if ($this->confirm('All monthly results records will be removed. Are you sure?', true)) {
-            MonthlyResult::truncate();
-            $this->call('event-sourcing:replay', ['projector' => ['Domain\\Stats\\Projectors\\MonthlyResultsProjector']]);
-            $this->info('Month results generated successfully!');
-        };
+        if ($this->confirm('Are you sure?', true)) {
+            $this->call('transactions:re-process');
+            $this->call('stats:refresh-monthly-results');
+        }
 
+        $this->info('All events and projectors reprocessed successfully');
         return 0;
     }
 }

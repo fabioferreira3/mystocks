@@ -5,7 +5,7 @@ namespace Domain\Stock\Projectors;
 use Domain\Broker\BrokerageNoteItem;
 use Domain\Broker\Jobs\CreateBrokerageNoteByStockTransaction;
 use Domain\Broker\Jobs\UpdateBrokerageNoteByStockTransaction;
-use Domain\Stats\Jobs\SyncMonthlyResults;
+use Domain\Stats\Jobs\UpdateMonthlyResults;
 use Domain\Stock\Events\StockTransactionCreated;
 use Domain\Stock\Events\StockTransactionDeleted;
 use Domain\Stock\Events\StockTransactionUpdated;
@@ -72,6 +72,6 @@ class StockTransactionProjector extends Projector {
 
         $stockTransaction->delete();
 
-        SyncMonthlyResults::dispatchSync($transactionDate);
+        UpdateMonthlyResults::dispatchSync($transactionDate);
     }
 }

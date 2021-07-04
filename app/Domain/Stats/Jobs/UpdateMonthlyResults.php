@@ -8,7 +8,7 @@ use Domain\Stock\StockTransaction;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SyncMonthlyResults {
+class UpdateMonthlyResults {
 
     use Dispatchable, SerializesModels;
 

@@ -2,7 +2,7 @@
 
 namespace Domain\Stats\Projectors;
 
-use Domain\Stats\Jobs\SyncMonthlyResults;
+use Domain\Stats\Jobs\UpdateMonthlyResults;
 use Domain\Stock\Events\StockTransactionCreated;
 use Domain\Stats\Services\CalculateMonthlyResult;
 use Domain\Stock\Events\StockTransactionUpdated;
@@ -18,7 +18,7 @@ class MonthlyResultsProjector extends Projector {
     public function onStockTransactionUpdated(StockTransactionUpdated $event)
     {
         $transactionDate = $event->stockTransactionAttributes;
-        SyncMonthlyResults::dispatchSync($transactionDate['date']);
+        UpdateMonthlyResults::dispatchSync($transactionDate['date']);
     }
 
 }
