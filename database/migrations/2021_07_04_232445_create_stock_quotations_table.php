@@ -16,7 +16,7 @@ class CreateStockQuotationsTable extends Migration
         Schema::create('stock_quotations', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('stock_id');
-            $table->decimal(10,2);
+            $table->decimal('price', 10,2);
             $table->timestamps();
         });
     }
