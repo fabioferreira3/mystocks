@@ -4,6 +4,7 @@ namespace Domain\Stock\Projectors;
 
 use Domain\Stock\Events\StockInplit;
 use Domain\Stock\Events\StockPositionDeleted;
+use Domain\Stock\Events\StockQuotationUpdated;
 use Domain\Stock\Events\StockSplit;
 use Domain\Stock\StockPosition;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
@@ -26,6 +27,13 @@ class StockPositionProjector extends Projector {
     {
         $stockPosition = StockPosition::byStockId($event->stockId);
         $stockPosition->position /= $event->targetProportion;
+        $stockPosition->save();
+    }
+
+    public function onStockQuotationUpdated(StockQuotationUpdated $event)
+    {
+        $stockPosition = StockPosition::byStockId($event->stockId);
+        $stockPosition->actual_total_value = $stockPosition->position * $event->price;
         $stockPosition->save();
     }
 }

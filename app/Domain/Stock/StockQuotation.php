@@ -2,6 +2,7 @@
 
 namespace Domain\Stock;
 
+use Domain\Stock\Events\StockQuotationUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 
@@ -29,7 +30,13 @@ class StockQuotation extends Model
         return static::where('id', $id)->first();
     }
 
-    public static function byStock(string $stockId): ?Stock{
+    public static function byStockId(string $stockId): ?StockQuotation
+    {
         return static::where('stock_id', $stockId)->first();
+    }
+
+    public static function createOrUpdate($stockId, $price)
+    {
+        event(new StockQuotationUpdated($stockId, $price));
     }
 }

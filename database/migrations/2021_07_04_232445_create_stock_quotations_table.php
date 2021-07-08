@@ -18,6 +18,8 @@ class CreateStockQuotationsTable extends Migration
             $table->uuid('stock_id');
             $table->decimal('price', 10,2);
             $table->timestamps();
+
+            $table->foreign('stock_id')->references('id')->on('stocks');
         });
     }
 

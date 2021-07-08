@@ -22,7 +22,8 @@ class StockPositionController extends Controller
                     'id' => $position->id,
                     'name' => $position->stock->name,
                     'current_position' => $position->position,
-                    'current_invested_value' => $position->current_invested_value
+                    'current_invested_value' => $position->current_invested_value,
+                    'actual_total_value' => $position->actual_total_value
                 ];
             }),
             'total_units' => $positions->reduce(function($carry, $position) {
@@ -30,6 +31,9 @@ class StockPositionController extends Controller
             }, 0),
             'total_invested_value' => $positions->reduce(function($carry, $position) {
                 return $carry + $position->current_invested_value;
+            }, 0),
+            'actual_total_value' => $positions->reduce(function($carry, $position) {
+                return $carry + $position->actual_total_value;
             }, 0)
         ];
 

@@ -27,6 +27,11 @@ class Stock extends Model
         return $this->hasOne(StockPosition::class);
     }
 
+    public function quotation()
+    {
+        return $this->hasOne(StockQuotation::class);
+    }
+
     public static function byId(string $id): ?Stock
     {
         return static::where('id', $id)->first();

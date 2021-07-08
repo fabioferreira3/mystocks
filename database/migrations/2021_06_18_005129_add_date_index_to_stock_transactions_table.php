@@ -26,7 +26,7 @@ class AddDateIndexToStockTransactionsTable extends Migration
     public function down()
     {
         Schema::table('stock_transactions', function (Blueprint $table) {
-            $table->dropIndex('date');
+            $table->dropIndex(['date']);
         });
     }
 }

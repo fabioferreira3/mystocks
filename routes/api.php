@@ -2,6 +2,7 @@
 
 use Domain\Stock\Controllers\StockController;
 use Domain\Stock\Controllers\StockPositionController;
+use Domain\Stock\Controllers\StockQuotationStoreController;
 use Domain\Stock\Controllers\StockTransactionDeleteController;
 use Domain\Stock\Controllers\StockTransactionReadController;
 use Domain\Stock\Controllers\StockTransactionStoreController;
@@ -26,3 +27,4 @@ Route::middleware('api')->delete('/transaction/{id}', StockTransactionDeleteCont
 
 Route::middleware('api')->get('/positions', [StockPositionController::class, 'index']);
 Route::middleware('api')->get('/stocks', [StockController::class, 'index']);
+Route::middleware('api')->put('/stocks/quotation', StockQuotationStoreController::class);
