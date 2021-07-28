@@ -3,7 +3,7 @@
 namespace Domain\Stock\Controllers;
 
 use App\Http\Controllers\Controller;
-use Domain\Stock\Resources\TransactionResource;
+use Domain\Stock\Resources\TransactionCollection;
 use Domain\Stock\StockTransaction;
 use Illuminate\Http\Request;
 
@@ -18,8 +18,8 @@ class StockTransactionReadController extends Controller
     {
         $year = $request->input('year');
         $month = $request->input('month');
-        $transactions = StockTransaction::byDate($year,$month)->get();
+        $transactions = StockTransaction::byDate($year,$month)->latest()->paginate(30);
 
-        return collect(TransactionResource::collection($transactions))->groupBy('date');
+        return new TransactionCollection($transactions);
     }
 }

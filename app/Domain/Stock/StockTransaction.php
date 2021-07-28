@@ -66,12 +66,10 @@ class StockTransaction extends Model
     }
 
     public static function byDate($year, $month = null) {
-        // $query = static::whereYear('date', $year);
-        // if ($month) {
-        //     $query->whereMonth('date', $month);
-        // }
-
-        // return $query->orderBy('date', 'DESC');
-        return static::first();
+        $query = static::whereYear('date', $year);
+        if ($month) {
+            $query->whereMonth('date', $month);
+        }
+        return $query;
     }
 }

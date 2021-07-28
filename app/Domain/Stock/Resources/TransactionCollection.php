@@ -15,7 +15,15 @@ class TransactionCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => $this->collection
+            'current_page' => $this->currentPage(),
+            'data' => $this->collection,
+            'first_page_url' => $this->url(1),
+            'from' => $this->firstItem(),
+            'last_page_url' => $this->url($this->lastPage()),
+            'next_page_url' => $this->nextPageUrl(),
+            "per_page" => $this->perPage(),
+            "total" => $this->total(),
+            "last_page" => $this->lastPage()
         ];
     }
 }
