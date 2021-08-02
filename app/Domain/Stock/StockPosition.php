@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
+use Illuminate\Support\Facades\Auth;
+use App\Scopes\OwnerOnlyScope;
 class StockPosition extends Model
 {
     use HasFactory;
@@ -26,6 +27,7 @@ class StockPosition extends Model
          * Let's generate a uuid.
          */
         $attributes['id'] = (string) Str::uuid();
+        $attributes['user_id'] = Auth::id();
         /*
          * The account will be created inside this event using the generated uuid.
          */
@@ -35,6 +37,11 @@ class StockPosition extends Model
          * The uuid will be used the retrieve the created account.
          */
         return static::byId($attributes['id']);
+    }
+
+    public function stock(): BelongsTo
+    {
+        return $this->belongsTo(Stock::class);
     }
 
     public function add(array $transactionData)
@@ -115,8 +122,8 @@ class StockPosition extends Model
         event(new StockPositionDeleted($this->id));
     }
 
-    public function stock(): BelongsTo
+    protected static function booted()
     {
-        return $this->belongsTo(Stock::class);
+        static::addGlobalScope(new OwnerOnlyScope());
     }
 }

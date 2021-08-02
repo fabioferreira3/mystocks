@@ -2,10 +2,12 @@
 
 namespace Domain\Broker;
 
+use App\Scopes\OwnerOnlyScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class BrokerageNote extends Model
@@ -18,6 +20,7 @@ class BrokerageNote extends Model
      * @var array
      */
     protected $fillable = [
+        'user_id',
         'broker_id',
         'date',
         'taxes',
@@ -30,6 +33,7 @@ class BrokerageNote extends Model
     public static function createWithAttributes(array $attributes): BrokerageNote
     {
         $attributes['id'] = (string) Str::uuid();
+        $attributes['user_id'] = Auth::id();
         self::create($attributes);
         return static::byId($attributes['id']);
     }
@@ -39,6 +43,7 @@ class BrokerageNote extends Model
         $id = (string) Str::uuid();
         return self::create([
             'id' => $id,
+            'user_id' => Auth::id(),
             'date' => $date,
             'taxes' => 0,
             'net_value' => 0,
@@ -87,5 +92,10 @@ class BrokerageNote extends Model
             }
         }
         $this->update($brokerageNoteUpdates);
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new OwnerOnlyScope());
     }
 }

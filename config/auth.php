@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'api',
         'passwords' => 'users',
     ],
 
@@ -36,13 +36,8 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-
         'api' => [
-            'driver' => 'token',
+            'driver' => 'session',
             'provider' => 'users',
             'hash' => false,
         ],
@@ -113,5 +108,10 @@ return [
     */
 
     'password_timeout' => 10800,
+
+    /**
+     * Set Google 2FA Auth
+     */
+    'mfa_enabled' => env('MFA_ENABLED', false),
 
 ];

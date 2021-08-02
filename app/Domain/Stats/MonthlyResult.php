@@ -2,6 +2,7 @@
 
 namespace Domain\Stats;
 
+use App\Scopes\OwnerOnlyScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
@@ -16,6 +17,7 @@ class MonthlyResult extends Model
      * @var array
      */
     protected $fillable = [
+        'user_id',
         'total_value',
         'taxes',
         'month_result',
@@ -48,5 +50,10 @@ class MonthlyResult extends Model
         $previousMonthResults = static::where('at_date', '<', $this->at_date)->orderBy('at_date', 'DESC')->first();
         $this->previous_result = $previousMonthResults ? $previousMonthResults->previous_result + $previousMonthResults->month_result : 0;
         $this->save();
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new OwnerOnlyScope());
     }
 }

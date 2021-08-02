@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Domain\Stock\Events\StockTransactionCreated;
 use Domain\Stock\Helpers\StockHelper;
 use Domain\Stats\MonthlyResult;
+use Illuminate\Support\Facades\Auth;
 
 class CalculateMonthlyResult {
 
@@ -25,6 +26,7 @@ class CalculateMonthlyResult {
 
         if (!$monthResult) {
             return MonthlyResult::create([
+                'user_id' => Auth::id(),
                 'total_value' => $stockValue,
                 'month_result' => $stockTotalValue,
                 'taxes' => $transactionData['taxes'],

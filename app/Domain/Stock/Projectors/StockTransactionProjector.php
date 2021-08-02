@@ -11,6 +11,7 @@ use Domain\Stock\Events\StockTransactionDeleted;
 use Domain\Stock\Events\StockTransactionUpdated;
 use Domain\Stock\StockPosition;
 use Domain\Stock\StockTransaction;
+use Illuminate\Support\Facades\Auth;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class StockTransactionProjector extends Projector {
@@ -20,6 +21,7 @@ class StockTransactionProjector extends Projector {
         $transactionData = $event->stockTransactionAttributes;
         $stockTransaction = StockTransaction::create([
             'id' => $transactionData['id'],
+            'user_id' => Auth::id(),
             'stock_id' => $transactionData['stock_id'],
             'wallet_id' => $transactionData['wallet_id'],
             'taxes' => $transactionData['taxes'],

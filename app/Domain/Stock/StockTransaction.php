@@ -2,6 +2,7 @@
 
 namespace Domain\Stock;
 
+use App\Scopes\OwnerOnlyScope;
 use Domain\Stock\Events\StockTransactionCreated;
 use Domain\Stock\Events\StockTransactionDeleted;
 use Domain\Stock\Events\StockTransactionUpdated;
@@ -22,6 +23,7 @@ class StockTransaction extends Model
      */
    protected $fillable = [
        'id',
+       'user_id',
        'date',
        'unit_price',
        'taxes',
@@ -30,6 +32,7 @@ class StockTransaction extends Model
        'amount',
        'type'
     ];
+
     protected $casts = ['date' => 'date', 'unit_price' => 'float'];
 
     public function stock(): BelongsTo
@@ -71,5 +74,10 @@ class StockTransaction extends Model
             $query->whereMonth('date', $month);
         }
         return $query;
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new OwnerOnlyScope());
     }
 }

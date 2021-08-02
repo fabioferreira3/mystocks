@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Domain\Stock\Events\StockSplit;
 use Domain\Stock\Stock;
-use Domain\Support\Helpers\StringHelper;
+use Support\Helpers\StringHelper;
 use Illuminate\Console\Command;
 
 class SplitStock extends Command

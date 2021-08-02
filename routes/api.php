@@ -7,7 +7,11 @@ use Domain\Stock\Controllers\StockTransactionDeleteController;
 use Domain\Stock\Controllers\StockTransactionReadController;
 use Domain\Stock\Controllers\StockTransactionStoreController;
 use Domain\Stock\Controllers\StockTransactionUpdateController;
+use Domain\User\User;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,11 +24,50 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('api')->post('/transaction', StockTransactionStoreController::class);
-Route::middleware('api')->put('/transaction/{id}', StockTransactionUpdateController::class);
-Route::middleware('api')->get('/transactions', StockTransactionReadController::class);
-Route::middleware('api')->delete('/transaction/{id}', StockTransactionDeleteController::class);
+$this->router->group([
+    'middleware' => ['api', 'auth:sanctum'],
+], function ($router) {
+    $router->post('/transaction', StockTransactionStoreController::class);
+    $router->put('/transaction/{id}', StockTransactionUpdateController::class);
+    $router->get('/transactions', StockTransactionReadController::class);
+    $router->delete('/transaction/{id}', StockTransactionDeleteController::class);
+    $router->get('/positions', [StockPositionController::class, 'index']);
+    $router->get('/stocks', [StockController::class, 'index']);
+    $router->put('/stocks/quotation', StockQuotationStoreController::class);
+});
 
-Route::middleware('api')->get('/positions', [StockPositionController::class, 'index']);
-Route::middleware('api')->get('/stocks', [StockController::class, 'index']);
-Route::middleware('api')->put('/stocks/quotation', StockQuotationStoreController::class);
+Route::post('/sanctum/token', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+        'device_name' => 'required',
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+
+    if (! $user || ! Hash::check($request->password, $user->password)) {
+        throw ValidationException::withMessages([
+            'email' => ['The provided credentials are incorrect.'],
+        ]);
+    }
+
+    return $user->createToken($request->device_name)->plainTextToken;
+});
+
+Route::post('/sanctum/token', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+        'device_name' => 'required',
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+
+    if (! $user || ! Hash::check($request->password, $user->password)) {
+        throw ValidationException::withMessages([
+            'email' => ['The provided credentials are incorrect.'],
+        ]);
+    }
+
+    return $user->createToken($request->device_name)->plainTextToken;
+});

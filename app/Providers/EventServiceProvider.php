@@ -6,11 +6,12 @@ use Domain\Stats\Projectors\MonthlyResultsProjector;
 use Domain\Stock\Projectors\StockPositionProjector;
 use Domain\Stock\Projectors\StockQuotationProjector;
 use Domain\Stock\Projectors\StockTransactionProjector;
-use Domain\Stock\StockQuotation;
+use Domain\StoredEvent\Observers\StoredEventObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Spatie\EventSourcing\Facades\Projectionist;
+use Spatie\EventSourcing\StoredEvents\Models\EloquentStoredEvent;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -38,5 +39,7 @@ class EventServiceProvider extends ServiceProvider
             StockTransactionProjector::class,
             MonthlyResultsProjector::class
         ]);
+
+        EloquentStoredEvent::observe(StoredEventObserver::class);
     }
 }

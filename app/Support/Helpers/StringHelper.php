@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Support\Helpers;
+namespace Support\Helpers;
 
 class StringHelper {
 
