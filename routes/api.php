@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Domain\Stock\Controllers\StockController;
 use Domain\Stock\Controllers\StockPositionController;
 use Domain\Stock\Controllers\StockQuotationStoreController;
@@ -34,13 +35,15 @@ $this->router->group([
     $router->get('/positions', [StockPositionController::class, 'index']);
     $router->get('/stocks', [StockController::class, 'index']);
     $router->put('/stocks/quotation', StockQuotationStoreController::class);
+    $router->post('/token/validate', function (Request $request) {
+        return true;
+    });
 });
 
-Route::post('/sanctum/token', function (Request $request) {
+Route::post('/token', function (Request $request) {
     $request->validate([
         'email' => 'required|email',
-        'password' => 'required',
-        'device_name' => 'required',
+        'password' => 'required'
     ]);
 
     $user = User::where('email', $request->email)->first();
@@ -51,23 +54,5 @@ Route::post('/sanctum/token', function (Request $request) {
         ]);
     }
 
-    return $user->createToken($request->device_name)->plainTextToken;
-});
-
-Route::post('/sanctum/token', function (Request $request) {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-        'device_name' => 'required',
-    ]);
-
-    $user = User::where('email', $request->email)->first();
-
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect.'],
-        ]);
-    }
-
-    return $user->createToken($request->device_name)->plainTextToken;
+    return $user->createToken($user->email . '***' . Carbon::now())->plainTextToken;
 });
