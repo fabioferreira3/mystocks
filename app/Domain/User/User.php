@@ -2,10 +2,12 @@
 
 namespace Domain\User;
 
+use Domain\User\Events\UserCreated;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GoldSpecDigital\LaravelEloquentUUID\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -51,5 +53,18 @@ class User extends Authenticatable
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = bcrypt($password);
+    }
+
+    public static function createWithAttributes(array $attributes): ?User
+    {
+        $attributes['id'] = (string) Str::uuid();
+        $user = User::create($attributes);
+        event(new UserCreated($user));
+        return static::byId($attributes['id']);
+    }
+
+    public static function byId(string $id): ?User
+    {
+        return static::where('id', $id)->first();
     }
 }

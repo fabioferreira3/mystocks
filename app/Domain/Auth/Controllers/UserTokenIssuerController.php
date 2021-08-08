@@ -3,6 +3,7 @@
 namespace Domain\Stock\Controllers;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Domain\User\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -19,8 +20,7 @@ class UserTokenIssuerController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required',
-            'device_name' => 'required',
+            'password' => 'required'
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -31,6 +31,6 @@ class UserTokenIssuerController extends Controller
             ]);
         }
 
-        return $user->createToken($request->device_name)->plainTextToken;
+        return $user->createToken($user->email . '***' . Carbon::now())->plainTextToken;
     }
 }

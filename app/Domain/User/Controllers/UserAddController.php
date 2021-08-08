@@ -5,6 +5,7 @@ namespace Domain\User\Controllers;
 use App\Http\Controllers\Controller;
 use Domain\User\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserAddController extends Controller
 {
@@ -23,6 +24,6 @@ class UserAddController extends Controller
 
         $user = User::create(request(['name', 'email', 'password']));
 
-        auth()->login($user);
+       // Auth::login($user);
     }
 }

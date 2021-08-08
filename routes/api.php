@@ -1,6 +1,5 @@
 <?php
 
-use Carbon\Carbon;
 use Domain\Stock\Controllers\StockController;
 use Domain\Stock\Controllers\StockPositionController;
 use Domain\Stock\Controllers\StockQuotationStoreController;
@@ -8,11 +7,10 @@ use Domain\Stock\Controllers\StockTransactionDeleteController;
 use Domain\Stock\Controllers\StockTransactionReadController;
 use Domain\Stock\Controllers\StockTransactionStoreController;
 use Domain\Stock\Controllers\StockTransactionUpdateController;
-use Domain\User\User;
+use Domain\Stock\Controllers\UserTokenIssuerController;
+use Domain\User\Controllers\UserAddController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,19 +38,5 @@ $this->router->group([
     });
 });
 
-Route::post('/token', function (Request $request) {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required'
-    ]);
-
-    $user = User::where('email', $request->email)->first();
-
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect.'],
-        ]);
-    }
-
-    return $user->createToken($user->email . '***' . Carbon::now())->plainTextToken;
-});
+Route::post('/token', UserTokenIssuerController::class);
+Route::post('/user', UserAddController::class);
