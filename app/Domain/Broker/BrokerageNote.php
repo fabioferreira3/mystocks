@@ -3,6 +3,7 @@
 namespace Domain\Broker;
 
 use App\Scopes\OwnerOnlyScope;
+use Domain\Wallet\Wallet;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,7 +21,7 @@ class BrokerageNote extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id',
+        'wallet_id',
         'broker_id',
         'date',
         'taxes',
@@ -33,7 +34,7 @@ class BrokerageNote extends Model
     public static function createWithAttributes(array $attributes): BrokerageNote
     {
         $attributes['id'] = (string) Str::uuid();
-        $attributes['user_id'] = Auth::id();
+        $attributes['wallet_id'] = Wallet::first()->id;
         self::create($attributes);
         return static::byId($attributes['id']);
     }
@@ -43,7 +44,7 @@ class BrokerageNote extends Model
         $id = (string) Str::uuid();
         return self::create([
             'id' => $id,
-            'user_id' => Auth::id(),
+            'wallet_id' => Wallet::first()->id,
             'date' => $date,
             'taxes' => 0,
             'net_value' => 0,
@@ -66,6 +67,11 @@ class BrokerageNote extends Model
     public function broker(): BelongsTo
     {
         return $this->belongsTo(Broker::class);
+    }
+
+    public function wallet(): BelongsTo
+    {
+        return $this->belongsTo(Wallet::class);
     }
 
     public function brokerageNoteItems(): HasMany

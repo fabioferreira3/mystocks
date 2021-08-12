@@ -10,6 +10,8 @@ use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 use App\Scopes\OwnerOnlyScope;
+use Domain\Wallet\Wallet;
+
 class StockPosition extends Model
 {
     use HasFactory;
@@ -27,7 +29,7 @@ class StockPosition extends Model
          * Let's generate a uuid.
          */
         $attributes['id'] = (string) Str::uuid();
-        $attributes['user_id'] = Auth::id();
+        $attributes['wallet_id'] = Wallet::first()->id;
         /*
          * The account will be created inside this event using the generated uuid.
          */
@@ -42,6 +44,11 @@ class StockPosition extends Model
     public function stock(): BelongsTo
     {
         return $this->belongsTo(Stock::class);
+    }
+
+    public function scopeInWallet($query)
+    {
+        return $query->where('position', '>', 0);
     }
 
     public function add(array $transactionData)

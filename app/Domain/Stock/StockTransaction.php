@@ -23,7 +23,6 @@ class StockTransaction extends Model
      */
    protected $fillable = [
        'id',
-       'user_id',
        'date',
        'unit_price',
        'taxes',

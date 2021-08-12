@@ -21,7 +21,6 @@ class StockTransactionProjector extends Projector {
         $transactionData = $event->stockTransactionAttributes;
         $stockTransaction = StockTransaction::create([
             'id' => $transactionData['id'],
-            'user_id' => Auth::id(),
             'stock_id' => $transactionData['stock_id'],
             'wallet_id' => $transactionData['wallet_id'],
             'taxes' => $transactionData['taxes'],

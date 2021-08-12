@@ -4,12 +4,12 @@ namespace Domain\Stock\Controllers;
 
 use App\Http\Controllers\Controller;
 use Domain\Stock\StockPosition;
+use Domain\Wallet\Wallet;
 use Illuminate\Http\Request;
 
 class StockPositionController extends Controller
 {
     /**
-     * Provision a new web server.
      *
      * @return \Illuminate\Http\Response
      */
@@ -38,5 +38,15 @@ class StockPositionController extends Controller
         ];
 
         return response()->json($response);
+    }
+
+    /**
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function chart(Request $request)
+    {
+        $wallet = Wallet::first();
+        return $wallet->getStockPositionsChart();
     }
 }
