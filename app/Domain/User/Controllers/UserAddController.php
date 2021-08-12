@@ -4,8 +4,8 @@ namespace Domain\User\Controllers;
 
 use App\Http\Controllers\Controller;
 use Domain\User\User;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class UserAddController extends Controller
 {
@@ -22,8 +22,13 @@ class UserAddController extends Controller
             'password' => 'required|confirmed'
         ]);
 
-        $user = User::create(request(['name', 'email', 'password']));
+        try {
+            User::create(request(['name', 'email', 'password']));
+            return response()->json(true);
+        }
+        catch(Exception $e) {
+            return response()->json(false);
+        }
 
-       // Auth::login($user);
     }
 }

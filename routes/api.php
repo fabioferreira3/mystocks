@@ -39,5 +39,5 @@ $this->router->group([
     });
 });
 
+Route::post('/users', UserAddController::class)->middleware('api');
 Route::post('/token', UserTokenIssuerController::class);
-Route::post('/user', UserAddController::class);
