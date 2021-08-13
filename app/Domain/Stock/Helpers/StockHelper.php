@@ -11,4 +11,9 @@ class StockHelper {
     public static function calculateTotalStockValue(int $amount, float $unitPrice, float $taxes) {
         return $amount * $unitPrice + $taxes;
     }
+
+    public static function calculateShareAmount($total, $qty)
+    {
+        return $qty * 100 / $total;
+    }
 }

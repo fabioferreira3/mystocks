@@ -2,6 +2,7 @@
 
 namespace Domain\Wallet;
 
+use Domain\Stock\Helpers\StockHelper;
 use Domain\Stock\StockPosition;
 use Domain\User\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -64,11 +65,12 @@ class Wallet extends Model
         return [
             'total' => $this->totalStockPositionsValue(),
             'positions' => $this->stockPositions()->inWallet()->get()->map(function ($stockPosition) {
+                $share = StockHelper::calculateShareAmount($this->totalStockPositionsValue(), $stockPosition->current_invested_value);
                 return [
+                    'id' => $stockPosition->id,
                     'stock_id' => $stockPosition->stock_id,
-                    'stock_name' => $stockPosition->stock->name,
-                    'position' => $stockPosition->position,
-                    'invested_value' => $stockPosition->current_invested_value
+                    'stock_name' => $share > 10 ? $stockPosition->stock->name : '',
+                    'share' => StockHelper::calculateShareAmount($this->totalStockPositionsValue(), $stockPosition->current_invested_value)
                 ];
             })
         ];
