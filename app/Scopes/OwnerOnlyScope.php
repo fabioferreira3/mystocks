@@ -18,8 +18,8 @@ class OwnerOnlyScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        // if(!Auth::user()->hasRole('master')) {
-        //     $builder->where('user_id', Auth::id());
-        // }
+        if (Auth::check() && !Auth::user()->hasRole('master')) {
+            $builder->where('wallet_id', Auth::user()->wallet->id);
+        }
     }
 }

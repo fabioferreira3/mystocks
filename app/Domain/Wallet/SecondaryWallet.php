@@ -2,15 +2,15 @@
 
 namespace Domain\Wallet;
 
+use App\Scopes\OwnerOnlyScope;
 use Domain\Stock\Helpers\StockHelper;
 use Domain\Stock\StockPosition;
-use Domain\User\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Wallet extends Model
+class SecondaryWallet extends Model
 {
     use HasFactory;
 
@@ -21,41 +21,17 @@ class Wallet extends Model
      */
     protected $fillable = [
         'name',
-        'total_invested_value',
-        'user_id'
+        'wallet_id'
     ];
 
-    public function user(): BelongsTo
+    public function mainWallet(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Wallet::class, 'wallet_id');
     }
 
-    public function stockPositions(): HasMany
+    public function stockPositions(): BelongsToMany
     {
-        return $this->hasMany(StockPosition::class);
-    }
-
-    public function secondaryWallets(): HasMany
-    {
-        return $this->hasMany(SecondaryWallet::class);
-    }
-
-    public function add(array $transactionData)
-    {
-        $this->total_invested_value += $transactionData['amount'] * $transactionData['unit_price'] + $transactionData['taxes'];
-        $this->save();
-    }
-
-    public function subtract(array $transactionData)
-    {
-        $this->total_invested_value -= $transactionData['amount'] * $transactionData['unit_price'] + $transactionData['taxes'];
-        $this->save();
-    }
-
-    public function consolidate()
-    {
-        $this->total_invested_value = $this->totalStockPositionsValue();
-        $this->save();
+        return $this->belongsToMany(StockPosition::class)->withTimestamps();
     }
 
     public function totalStockPositionsValue()
@@ -83,5 +59,10 @@ class Wallet extends Model
                 ];
             })->sortByDesc('share')->values()
         ];
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new OwnerOnlyScope());
     }
 }

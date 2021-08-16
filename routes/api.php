@@ -24,15 +24,14 @@ use Illuminate\Http\Request;
 */
 
 $this->router->group([
-    'middleware' => ['api'],
+    'middleware' => ['api', 'auth:sanctum'],
 ], function ($router) {
     $router->post('/transaction', StockTransactionStoreController::class);
     $router->put('/transaction/{id}', StockTransactionUpdateController::class);
     $router->get('/transactions', StockTransactionReadController::class);
     $router->delete('/transaction/{id}', StockTransactionDeleteController::class);
+    $router->get('/positions/{walletId?}', [StockPositionController::class, 'index']);
     $router->get('/positions', [StockPositionController::class, 'index']);
-    $router->get('/positions/chart', [StockPositionController::class, 'chart']);
-    $router->get('/positions/chart/{walletId?}', [StockPositionController::class, 'index']);
     $router->get('/stocks', [StockController::class, 'index']);
     $router->put('/stocks/quotation', StockQuotationStoreController::class);
     $router->post('/token/validate', function (Request $request) {
