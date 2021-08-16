@@ -18,6 +18,7 @@ class Stock extends Model
         'name',
         'type',
         'company',
+        'company_alias',
         'sector',
         'symbol'
     ];

@@ -32,6 +32,7 @@ $this->router->group([
     $router->delete('/transaction/{id}', StockTransactionDeleteController::class);
     $router->get('/positions', [StockPositionController::class, 'index']);
     $router->get('/positions/chart', [StockPositionController::class, 'chart']);
+    $router->get('/positions/chart/{walletId?}', [StockPositionController::class, 'index']);
     $router->get('/stocks', [StockController::class, 'index']);
     $router->put('/stocks/quotation', StockQuotationStoreController::class);
     $router->post('/token/validate', function (Request $request) {

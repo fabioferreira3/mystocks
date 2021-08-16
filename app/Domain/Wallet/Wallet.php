@@ -69,10 +69,14 @@ class Wallet extends Model
                 return [
                     'id' => $stockPosition->id,
                     'stock_id' => $stockPosition->stock_id,
-                    'stock_name' => $share > 10 ? $stockPosition->stock->name : '',
-                    'share' => StockHelper::calculateShareAmount($this->totalStockPositionsValue(), $stockPosition->current_invested_value)
+                    'stock_name' => $stockPosition->stock->name,
+                    'stock_company' => $stockPosition->stock->company_alias,
+                    'current_total_value' => $stockPosition->actual_total_value,
+                    'units' => $stockPosition->position,
+                    'unit_price' => $stockPosition->stock->quotation ? $stockPosition->stock->quotation->price : 0,
+                    'share' => round($share, 2)
                 ];
-            })
+            })->sortByDesc('share')->values()
         ];
     }
 }

@@ -13,8 +13,9 @@ class StockPositionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, string $walletId)
     {
+       // $query = StockPosition::where('position', '>', 0);
         $positions = StockPosition::where('position', '>', 0)->get();
         $response = [
             'positions' => $positions->map(function($position) {
@@ -47,6 +48,6 @@ class StockPositionController extends Controller
     public function chart(Request $request)
     {
         $wallet = Wallet::first();
-        return $wallet->getStockPositionsChart();
+        return response()->json($wallet->getStockPositionsChart());
     }
 }
