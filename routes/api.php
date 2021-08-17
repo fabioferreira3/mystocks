@@ -8,6 +8,7 @@ use Domain\Stock\Controllers\StockTransactionReadController;
 use Domain\Stock\Controllers\StockTransactionStoreController;
 use Domain\Stock\Controllers\StockTransactionUpdateController;
 use Domain\Stock\Controllers\UserTokenIssuerController;
+use Domain\Stock\Controllers\WalletController;
 use Domain\User\Controllers\UserAddController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -34,6 +35,7 @@ $this->router->group([
     $router->get('/positions', [StockPositionController::class, 'index']);
     $router->get('/stocks', [StockController::class, 'index']);
     $router->put('/stocks/quotation', StockQuotationStoreController::class);
+    $router->get('/wallets', [WalletController::class, 'index']);
     $router->post('/token/validate', function (Request $request) {
         return true;
     });
