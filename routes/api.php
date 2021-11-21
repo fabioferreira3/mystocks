@@ -25,7 +25,7 @@ use Illuminate\Http\Request;
 */
 
 $this->router->group([
-    'middleware' => ['api', 'auth:sanctum'],
+    'middleware' => ['api'],
 ], function ($router) {
     $router->post('/transaction', StockTransactionStoreController::class);
     $router->put('/transaction/{id}', StockTransactionUpdateController::class);

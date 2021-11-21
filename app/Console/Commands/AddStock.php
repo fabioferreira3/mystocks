@@ -50,7 +50,7 @@ class AddStock extends Command
         }
         $stockAnalyse = $this->analyzer->symbolSearch($stockCode);
 
-        if($stockAnalyse) {
+        if ($stockAnalyse) {
            $this->info($stockAnalyse['name']);
            $this->info($stockAnalyse['type']);
            $this->info($stockAnalyse['alpha_symbol']);
