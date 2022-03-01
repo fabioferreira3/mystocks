@@ -4,14 +4,13 @@ namespace Domain\Stock\Projectors;
 
 use Domain\Broker\BrokerageNoteItem;
 use Domain\Broker\Jobs\CreateBrokerageNoteByStockTransaction;
-use Domain\Broker\Jobs\UpdateBrokerageNoteByStockTransaction;
 use Domain\Stats\Jobs\UpdateMonthlyResults;
 use Domain\Stock\Events\StockTransactionCreated;
 use Domain\Stock\Events\StockTransactionDeleted;
 use Domain\Stock\Events\StockTransactionUpdated;
+use Domain\Stock\Helpers\StockHelper;
 use Domain\Stock\StockPosition;
 use Domain\Stock\StockTransaction;
-use Illuminate\Support\Facades\Auth;
 use Spatie\EventSourcing\EventHandlers\Projectors\Projector;
 
 class StockTransactionProjector extends Projector {
@@ -28,6 +27,7 @@ class StockTransactionProjector extends Projector {
             'amount' => $transactionData['amount'],
             'type' => $transactionData['type'],
             'date' => $transactionData['date'],
+            'net_value' => StockHelper::calculateNetStockValue($transactionData, $transactionData['type'])
         ]);
 
         $stockPosition = StockPosition::byStockId($transactionData['stock_id']);
@@ -59,8 +59,6 @@ class StockTransactionProjector extends Projector {
         $stockTransaction = $stockTransaction->refresh();
 
         $stockPosition->apply($stockTransaction);
-
-        UpdateBrokerageNoteByStockTransaction::dispatchSync($stockTransaction);
     }
 
     public function onStockTransactionDeleted(StockTransactionDeleted $event)

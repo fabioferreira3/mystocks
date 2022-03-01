@@ -3,12 +3,13 @@
 namespace Domain\Broker;
 
 use App\Scopes\OwnerOnlyScope;
+use Domain\Stock\Helpers\StockHelper;
+use Domain\Stock\StockTransaction;
 use Domain\Wallet\Wallet;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
 class BrokerageNote extends Model
@@ -26,7 +27,9 @@ class BrokerageNote extends Model
         'date',
         'taxes',
         'net_value',
-        'total_value',
+        'total_operations_value',
+        'total_purchased',
+        'total_sold',
         'sells',
         'purchases'
     ];
@@ -48,7 +51,9 @@ class BrokerageNote extends Model
             'date' => $date,
             'taxes' => 0,
             'net_value' => 0,
-            'total_value' => 0,
+            'total_operations_value' => 0,
+            'total_purchased' => 0,
+            'total_sold' => 0,
             'sells' => 0,
             'purchases' => 0
         ]);
@@ -74,9 +79,9 @@ class BrokerageNote extends Model
         return $this->belongsTo(Wallet::class);
     }
 
-    public function brokerageNoteItems(): HasMany
+    public function stockTransactions(): BelongsToMany
     {
-        return $this->hasMany(BrokerageNoteItem::class);
+        return $this->belongsToMany(StockTransaction::class)->withTimestamps();
     }
 
     public function reprocess()
@@ -88,16 +93,33 @@ class BrokerageNote extends Model
             'sells' => 0,
             'purchases' => 0
         ];
-        if ($this->brokerageNoteItems()->count()) {
-            foreach ($this->brokerageNoteItems->toArray() as $item) {
+        if ($this->stockTransactions->count()) {
+            foreach ($this->stockTransactions->toArray() as $item) {
                 $brokerageNoteUpdates['taxes'] += $item['taxes'];
                 $brokerageNoteUpdates['net_value'] += $item['amount'] * $item['net_value'];
-                $brokerageNoteUpdates['total_value'] += $item['total_value'];
+                $brokerageNoteUpdates['total_value'] += 0;
                 $brokerageNoteUpdates['sells'] += $item['type'] == 'sell' ? 1 : 0;
                 $brokerageNoteUpdates['purchases'] += $item['type'] == 'buy' ? 1 : 0;
             }
         }
         $this->update($brokerageNoteUpdates);
+    }
+
+    public function addFromTransaction(StockTransaction $stockTransaction)
+    {
+        $stockValue = StockHelper::calculateStockValue($stockTransaction->amount, $stockTransaction->unit_price);
+        $isSellingType = $stockTransaction->type == 'sell';
+        $purchased = !$isSellingType ? $stockValue : 0;
+        $sold = $isSellingType ? $stockValue : 0;
+
+        $this->net_value += $sold - $purchased - $stockTransaction->taxes;
+        $this->purchases += !$isSellingType ? 1 : 0;
+        $this->sells += $isSellingType ? 1 : 0;
+        $this->taxes += $stockTransaction->taxes;
+        $this->total_purchased += $purchased;
+        $this->total_sold += $sold;
+        $this->total_operations_value += $sold + $purchased;
+        $this->save();
     }
 
     protected static function booted()

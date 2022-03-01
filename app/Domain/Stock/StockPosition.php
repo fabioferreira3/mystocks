@@ -54,7 +54,7 @@ class StockPosition extends Model
     public function add(array $transactionData)
     {
         $this->position += $transactionData['amount'];
-        $this->current_invested_value += StockHelper::calculateTotalStockValue($transactionData['amount'], $transactionData['unit_price'], $transactionData['taxes']);
+        $this->current_invested_value += StockHelper::calculateNetStockValue($transactionData, 'buy');
         $this->save();
     }
 
@@ -66,7 +66,7 @@ class StockPosition extends Model
             $this->position -= $transactionData['amount'];
         }
 
-        $this->current_invested_value -= StockHelper::calculateTotalStockValue($transactionData['amount'], $transactionData['unit_price'], $transactionData['taxes']);
+        $this->current_invested_value -= StockHelper::calculateNetStockValue($transactionData, 'sell');
         $this->save();
     }
 

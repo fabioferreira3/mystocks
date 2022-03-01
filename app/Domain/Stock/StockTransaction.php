@@ -29,6 +29,7 @@ class StockTransaction extends Model
        'stock_id',
        'wallet_id',
        'amount',
+       'net_value',
        'type'
     ];
 

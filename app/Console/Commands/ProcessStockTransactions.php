@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Domain\Broker\BrokerageNote;
-use Domain\Broker\BrokerageNoteItem;
 use Domain\Stats\MonthlyResult;
 use Domain\Stock\StockPosition;
 use Domain\Stock\StockTransaction;
@@ -45,7 +44,6 @@ class ProcessStockTransactions extends Command
         if ($this->confirm('All stock positions and transaction records will be removed. Are you sure?', true)) {
             StockPosition::truncate();
             StockTransaction::truncate();
-            BrokerageNoteItem::truncate();
             BrokerageNote::truncate();
             $this->call('event-sourcing:replay', ['projector' => ['Domain\\Stock\\Projectors\\StockTransactionProjector']]);
             $this->call('event-sourcing:replay', ['projector' => ['Domain\\Stock\\Projectors\\StockPositionProjector']]);

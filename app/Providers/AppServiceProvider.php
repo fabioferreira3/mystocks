@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use Domain\Broker\BrokerageNoteItem;
-use Domain\Stock\Observers\BrokerageNoteItemObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +23,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        BrokerageNoteItem::observe(BrokerageNoteItemObserver::class);
     }
 }

@@ -33,7 +33,9 @@ class StockPositionProjector extends Projector {
     public function onStockQuotationUpdated(StockQuotationUpdated $event)
     {
         $stockPosition = StockPosition::byStockId($event->stockId);
-        $stockPosition->actual_total_value = $stockPosition->position * $event->price;
-        $stockPosition->save();
+        if ($stockPosition) {
+            $stockPosition->actual_total_value = $stockPosition->position * $event->price;
+            $stockPosition->save();
+        }
     }
 }

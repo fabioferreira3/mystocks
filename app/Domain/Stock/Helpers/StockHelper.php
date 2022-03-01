@@ -8,8 +8,9 @@ class StockHelper {
         return $amount * $unitPrice;
     }
 
-    public static function calculateTotalStockValue(int $amount, float $unitPrice, float $taxes) {
-        return $amount * $unitPrice + $taxes;
+    public static function calculateNetStockValue(array $transactionData, string $type) {
+        $netValue = $transactionData['amount'] * $transactionData['unit_price'];
+        return $type == 'buy' ? $netValue + $transactionData['taxes'] : $netValue - $transactionData['taxes'];
     }
 
     public static function calculateShareAmount($total, $qty)
